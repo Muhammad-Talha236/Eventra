@@ -1,7 +1,7 @@
 const Registration = require('../models/Registration.model');
 const Event = require('../models/Event.model');
 const crypto = require('crypto');
-
+const QRCode = require('qrcode');
 // Unique ticket ID generate
 const generateTicketId = () => {
   return 'TKT-' + crypto.randomBytes(4).toString('hex').toUpperCase();
@@ -12,32 +12,39 @@ exports.registerForEvent = async (req, res) => {
   const { eventId } = req.body;
   const userId = req.user.id;
 
-  // Event exist karta hai?
   const event = await Event.findById(eventId);
   if (!event) {
     return res.status(404).json({ success: false, message: 'Event not found' });
   }
 
-  // Capacity check
   if (event.registeredCount >= event.capacity) {
     return res.status(400).json({ success: false, message: 'Event is full!' });
   }
 
-  // Already registered?
   const existing = await Registration.findOne({ user: userId, event: eventId });
   if (existing) {
     return res.status(400).json({ success: false, message: 'Already registered!' });
   }
 
-  // Registration banao
+  const ticketId = generateTicketId();
+
+  // QR Code generate karo
+  const qrData = JSON.stringify({
+    ticketId,
+    eventId,
+    userId,
+    eventTitle: event.title,
+  });
+  const qrCode = await QRCode.toDataURL(qrData);
+
   const registration = await Registration.create({
     user: userId,
     event: eventId,
-    ticketId: generateTicketId(),
+    ticketId,
+    qrCode,
     paymentStatus: event.isFree ? 'free' : 'pending',
   });
 
-  // Event ka count update karo
   await Event.findByIdAndUpdate(eventId, { $inc: { registeredCount: 1 } });
 
   res.status(201).json({
@@ -46,7 +53,6 @@ exports.registerForEvent = async (req, res) => {
     registration,
   });
 };
-
 // @GET /api/registrations/my — My registrations
 exports.getMyRegistrations = async (req, res) => {
   const registrations = await Registration.find({ user: req.user.id })
@@ -97,4 +103,33 @@ exports.cancelRegistration = async (req, res) => {
   await registration.deleteOne();
 
   res.json({ success: true, message: 'Registration cancelled!' });
+};
+
+// @PUT /api/registrations/:id/attend — Mark attendance
+exports.markAttendance = async (req, res) => {
+  const registration = await Registration.findByIdAndUpdate(
+    req.params.id,
+    { attended: true },
+    { new: true }
+  ).populate('user', 'name email')
+   .populate('event', 'title date');
+
+  if (!registration) {
+    return res.status(404).json({ success: false, message: 'Registration not found' });
+  }
+
+  res.json({ success: true, message: 'Attendance marked!', registration });
+};
+
+// @GET /api/registrations/scan/:ticketId — Scan QR & get registration
+exports.scanTicket = async (req, res) => {
+  const registration = await Registration.findOne({ ticketId: req.params.ticketId })
+    .populate('user', 'name email role studentInfo')
+    .populate('event', 'title date venue startTime');
+
+  if (!registration) {
+    return res.status(404).json({ success: false, message: 'Invalid ticket!' });
+  }
+
+  res.json({ success: true, registration });
 };

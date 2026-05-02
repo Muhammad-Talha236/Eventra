@@ -18,7 +18,7 @@ import AdminIncidents from './pages/admin/AdminIncidents';
 import AdminAnnouncements from './pages/admin/AdminAnnouncements';
 
 import VolunteerDashboard from './pages/volunteer/VolunteerDashboard';
-
+import ScanTicket from './pages/user/ScanTicket';
 const Unauthorized = () => (
   <div className="min-h-screen flex items-center justify-center">
     <div className="text-center">
@@ -81,6 +81,11 @@ export default function App() {
             <VolunteerDashboard />
           </ProtectedRoute>
         } />
+         <Route path="/admin/scan" element={
+  <ProtectedRoute roles={['admin', 'staff', 'volunteer']}>
+    <ScanTicket />
+  </ProtectedRoute>
+} />
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

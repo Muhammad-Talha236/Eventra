@@ -11,6 +11,7 @@ const navItems = [
   { path: '/admin/tasks', label: '📋 Tasks' },
   { path: '/admin/incidents', label: '🚨 Incidents' },
   { path: '/admin/announcements', label: '📢 Announcements' },
+  { path: '/admin/scan', label: '📷 Scan Ticket' },
 ];
 
 export default function AdminLayout({ children }) {
