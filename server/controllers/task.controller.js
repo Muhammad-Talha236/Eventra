@@ -1,6 +1,6 @@
 const Task = require('../models/Task.model');
 const Notification = require('../models/Notification.model');
-
+const { getIO } = require('../socket');
 // @GET /api/tasks — All tasks (admin/staff)
 exports.getAllTasks = async (req, res) => {
   const tasks = await Task.find()
@@ -29,13 +29,24 @@ exports.createTask = async (req, res) => {
     assignedBy: req.user.id,
   });
 
-  // Notification bhejo
   await Notification.create({
     title: 'New Task Assigned',
     message: `You have been assigned: ${task.title}`,
     receiver: task.assignedTo,
     type: 'task',
   });
+
+  // Real-time notification bhejo
+  try {
+    const io = getIO();
+    io.to(task.assignedTo.toString()).emit('notification', {
+      title: 'New Task Assigned',
+      message: `You have been assigned: ${task.title}`,
+      type: 'task',
+    });
+  } catch (e) {
+    console.log('Socket emit failed:', e.message);
+  }
 
   const populated = await task.populate([
     { path: 'assignedTo', select: 'name email' },

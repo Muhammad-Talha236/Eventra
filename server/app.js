@@ -1,13 +1,19 @@
 const express = require('express');
+const http = require('http');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
+const { initSocket } = require('./socket');
 require('dotenv').config();
 
 connectDB();
 
 const app = express();
+const server = http.createServer(app);
+
+// Socket initialize karo
+initSocket(server);
 
 app.use(helmet());
 app.use(cors({
@@ -35,4 +41,4 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+server.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

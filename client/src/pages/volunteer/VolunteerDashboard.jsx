@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
-
+import NotificationBell from '../../components/NotificationBell';
 const priorityColor = {
   low: 'bg-gray-100 text-gray-600',
   medium: 'bg-yellow-100 text-yellow-700',
@@ -125,6 +125,8 @@ export default function VolunteerDashboard() {
         </h1>
 
         <div className="flex items-center gap-4">
+
+          <NotificationBell />
 
           <button
             onClick={() => setShowIncident(true)}

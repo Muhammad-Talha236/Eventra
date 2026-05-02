@@ -1,15 +1,16 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import NotificationBell from '../components/NotificationBell';
 import toast from 'react-hot-toast';
 
 const navItems = [
-  { path: '/admin/dashboard', label: '📊 Dashboard', },
-  { path: '/admin/events', label: '🎟️ Events', },
-  { path: '/admin/users', label: '👥 Users', },
-  { path: '/admin/volunteers', label: '🙋 Volunteers', },
-  { path: '/admin/tasks', label: '📋 Tasks', },
-  { path: '/admin/incidents', label: '🚨 Incidents', },
-  { path: '/admin/announcements', label: '📢 Announcements', },
+  { path: '/admin/dashboard', label: '📊 Dashboard' },
+  { path: '/admin/events', label: '🎟️ Events' },
+  { path: '/admin/users', label: '👥 Users' },
+  { path: '/admin/volunteers', label: '🙋 Volunteers' },
+  { path: '/admin/tasks', label: '📋 Tasks' },
+  { path: '/admin/incidents', label: '🚨 Incidents' },
+  { path: '/admin/announcements', label: '📢 Announcements' },
 ];
 
 export default function AdminLayout({ children }) {
@@ -25,7 +26,6 @@ export default function AdminLayout({ children }) {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
       <aside className="w-64 bg-blue-900 text-white flex flex-col fixed h-full">
         <div className="p-6 border-b border-blue-700">
           <h1 className="text-2xl font-bold">🎓 Eventra</h1>
@@ -49,14 +49,17 @@ export default function AdminLayout({ children }) {
         </nav>
 
         <div className="p-4 border-t border-blue-700">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center font-bold">
-              {user?.name?.charAt(0)}
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center font-bold">
+                {user?.name?.charAt(0)}
+              </div>
+              <div>
+                <p className="text-sm font-medium">{user?.name}</p>
+                <p className="text-xs text-blue-300 capitalize">{user?.role}</p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-medium">{user?.name}</p>
-              <p className="text-xs text-blue-300 capitalize">{user?.role}</p>
-            </div>
+            <NotificationBell />
           </div>
           <button
             onClick={handleLogout}
@@ -67,7 +70,6 @@ export default function AdminLayout({ children }) {
         </div>
       </aside>
 
-      {/* Main Content */}
       <main className="ml-64 flex-1 p-8">
         {children}
       </main>
