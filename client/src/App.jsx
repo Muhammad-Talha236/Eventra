@@ -18,6 +18,9 @@ import AdminUsers from './pages/admin/AdminUsers';
 import AdminTasks from './pages/admin/AdminTasks';
 import VolunteerDashboard from './pages/volunteer/VolunteerDashboard';
 
+import AdminIncidents from './pages/admin/AdminIncidents';
+import AdminAnnouncements from './pages/admin/AdminAnnouncements';
+
 const Unauthorized = () => (
   <div className="min-h-screen flex items-center justify-center">
     <div className="text-center">
@@ -78,6 +81,17 @@ export default function App() {
 <Route path="/volunteer/dashboard" element={
   <ProtectedRoute roles={['volunteer', 'co_head', 'main_head', 'staff']}>
     <VolunteerDashboard />
+  </ProtectedRoute>
+} />
+
+<Route path="/admin/incidents" element={
+  <ProtectedRoute roles={['admin', 'staff']}>
+    <AdminIncidents />
+  </ProtectedRoute>
+} />
+<Route path="/admin/announcements" element={
+  <ProtectedRoute roles={['admin']}>
+    <AdminAnnouncements />
   </ProtectedRoute>
 } />
         <Route path="*" element={<Navigate to="/" replace />} />
