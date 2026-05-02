@@ -50,6 +50,10 @@ export default function UserDashboard() {
             Logout
           </button>
         </div>
+        <Link to="/my-tickets"
+  className="text-sm text-blue-600 hover:underline">
+  🎟️ My Tickets
+</Link>
       </nav>
 
       <div className="max-w-6xl mx-auto px-8 py-10">

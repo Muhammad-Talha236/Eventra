@@ -11,6 +11,9 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminEvents from './pages/admin/AdminEvents';
 import CreateEvent from './pages/admin/CreateEvent';
 
+import EventDetail from './pages/user/EventDetail';
+import MyTickets from './pages/user/MyTickets';
+
 const Unauthorized = () => (
   <div className="min-h-screen flex items-center justify-center">
     <div className="text-center">
@@ -47,7 +50,16 @@ export default function App() {
         <Route path="/admin/events/create" element={
           <ProtectedRoute roles={['admin', 'staff']}><CreateEvent /></ProtectedRoute>
         } />
-
+        <Route path="/events/:id" element={
+  <ProtectedRoute roles={['user', 'admin', 'staff', 'main_head', 'co_head', 'volunteer']}>
+    <EventDetail />
+  </ProtectedRoute>
+} />
+<Route path="/my-tickets" element={
+  <ProtectedRoute roles={['user', 'admin', 'staff', 'main_head', 'co_head', 'volunteer']}>
+    <MyTickets />
+  </ProtectedRoute>
+} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>

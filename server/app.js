@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/events', require('./routes/event.routes'));
-
+app.use('/api/registrations', require('./routes/registration.routes'));
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.statusCode || 500).json({
