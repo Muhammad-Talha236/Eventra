@@ -21,10 +21,11 @@ export default function LoginPage() {
       toast.success(`Welcome back, ${user.name}!`);
 
       // Role based redirect
-      if (user.role === 'admin') navigate('/admin/dashboard');
-      else if (user.role === 'staff') navigate('/staff/dashboard');
-      else if (['main_head', 'co_head', 'volunteer'].includes(user.role)) navigate('/volunteer/dashboard');
-      else navigate('/dashboard');
+     // Role based redirect
+if (user.role === 'admin') navigate('/admin/dashboard');
+else if (user.role === 'staff') navigate('/staff/dashboard');
+else if (['main_head', 'co_head', 'volunteer'].includes(user.role)) navigate('/volunteer/dashboard');
+else navigate('/dashboard'); // user yahan aayega
 
     } catch (err) {
       toast.error(err.response?.data?.message || 'Login failed');

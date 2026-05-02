@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import ProtectedRoute from './components/ProtectedRoute';
+import UserDashboard from './pages/user/UserDashboard';
 
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
@@ -30,6 +31,12 @@ export default function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
 
+// Routes mein add karo:
+<Route path="/dashboard" element={
+  <ProtectedRoute roles={['user', 'admin', 'staff', 'main_head', 'co_head', 'volunteer']}>
+    <UserDashboard />
+  </ProtectedRoute>
+} />
         {/* Admin Routes */}
         <Route path="/admin/dashboard" element={
           <ProtectedRoute roles={['admin']}><AdminDashboard /></ProtectedRoute>
