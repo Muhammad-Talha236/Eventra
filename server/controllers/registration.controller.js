@@ -133,3 +133,39 @@ exports.scanTicket = async (req, res) => {
 
   res.json({ success: true, registration });
 };
+
+// @POST /api/registrations/:id/payment-screenshot — Upload screenshot
+exports.uploadPaymentScreenshot = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ success: false, message: 'No file uploaded' });
+  }
+
+  const registration = await Registration.findOneAndUpdate(
+    { _id: req.params.id, user: req.user.id },
+    {
+      paymentScreenshot: req.file.path,
+      paymentStatus: 'pending',
+    },
+    { new: true }
+  );
+
+  if (!registration) {
+    return res.status(404).json({ success: false, message: 'Registration not found' });
+  }
+
+  res.json({
+    success: true,
+    message: 'Screenshot uploaded! Waiting for verification.',
+    registration,
+  });
+};
+
+// @GET /api/registrations/pending-payments — Pending payments (admin)
+exports.getPendingPayments = async (req, res) => {
+  const registrations = await Registration.find({ paymentStatus: 'pending' })
+    .populate('user', 'name email studentInfo')
+    .populate('event', 'title date fee')
+    .sort({ createdAt: -1 });
+
+  res.json({ success: true, count: registrations.length, registrations });
+};
